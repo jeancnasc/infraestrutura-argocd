@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ingress-nginx
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: https://kubernetes.github.io/ingress-nginx
+      targetRevision: 4.6.1
+      chart: ingress-nginx
+      helm:
+        version: v3
+        releaseName: ingress-nginx
+        parameters:
+        - name: "controller.extraArgs.enable-ssl-passthrough"
+          value: "true"
+        - name: "controller.extraArgs.watch-ingress-without-class"
+          value: "true"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: true
+    syncOptions:
+    - CreateNamespace=true
+  destination: 
+    name: in-cluster
+    namespace: ingress-nginx
