@@ -1,0 +1,24 @@
+gitlabUrl: https://gitlab.com/
+
+runnerRegistrationToken: $GITLAB_COM_RUNNER_TOKEN
+
+rbac:
+  create: true
+
+runners:
+  config: |
+    [[runners]]
+      [runners.kubernetes]
+        [[runners.kubernetes.volumes.host_path]]
+          name = "docker-sock"
+          mount_path = "/var/run/docker.sock"
+          read_only = false
+          host_path = "/var/run/docker.sock"
+
+resources:
+   limits:
+     cpu: 100m
+     memory: 128Mi
+   requests:
+     cpu: 100m
+     memory: 128Mi

@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gitlab-com-runner
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: https://charts.gitlab.io
+      targetRevision: 0.56
+      chart: gitlab-runner
+      helm:
+        version: v3
+        releaseName: gitlab-com-runner
+        valueFiles:
+        - $values/gitlab-com-runner.values.yaml
+    - repoURL: git@github.com:jeancnasc/infraestrutura-argocd.git
+      targetRevision: HEAD
+      ref: values
+      directory:
+        exclude: '{*.application.yaml,*.project.yaml}'
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: true
+    syncOptions:
+    - CreateNamespace=true
+  destination: 
+    name: in-cluster
+    namespace: gitlab-com-runner
