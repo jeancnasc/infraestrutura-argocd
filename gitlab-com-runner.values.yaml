@@ -1,11 +1,10 @@
 gitlabUrl: https://gitlab.com/
 
-runnerRegistrationToken: $GITLAB_COM_RUNNER_TOKEN
-
 rbac:
   create: true
 
 runners:
+  secret: gitlab-runner-secret
   config: |
     [[runners]]
       [runners.kubernetes]
