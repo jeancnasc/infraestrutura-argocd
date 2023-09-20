@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: https://charts.jetstack.io
+      targetRevision: 1.13.0
+      chart: jetstack/cert-manager
+      helm:
+        version: v3
+        releaseName: cert-manager
+        valueFiles:
+        - $values/cert-manager.values.yaml
+    - repoURL: git@github.com:jeancnasc/infraestrutura-argocd.git
+      targetRevision: HEAD
+      ref: values
+      directory:
+        exclude: '{*.application.yaml,*.project.yaml}'
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: true
+    syncOptions:
+    - CreateNamespace=true
+  destination: 
+    name: in-cluster
+    namespace: cert-manager
